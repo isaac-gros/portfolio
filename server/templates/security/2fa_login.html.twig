@@ -1,0 +1,10 @@
+<h1>Vérification double facteur</h1>
+<img src="{{ path('qr_code') }}" alt="qr-code">
+<form class="form" action="/2fa_check" method="post">
+    <input id="_auth_code" type="text" name="_auth_code" autocomplete="one-time-code" autofocus/>
+    <p class="submit">
+        <input type="submit" value="Login" />
+    </p>
+</form>
+
+<p class="cancel"><a href="/logout">Cancel</a></p>

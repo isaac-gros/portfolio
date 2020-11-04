@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\Google\GoogleAuthenticatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,12 +18,18 @@ class AuthenticationController extends AbstractController
     /**
      * @Route("/register", name="app_auth")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function register(
+        Request $request, 
+        UserPasswordEncoderInterface $passwordEncoder,
+        GoogleAuthenticatorInterface $googleAuthenticatorInterface
+    ): Response
     {
         $registrationAllowed = boolval($_ENV['REGISTRATION_ALLOWED']);
         if(!$registrationAllowed) {
-            $message = "La création de nouveaux utilisateurs est désactivée.";
-            return new Response($message, 403);
+            return new Response($this->renderView('errors/error.html.twig', [
+                'status' => 403,
+                'message' => 'La création de nouveaux utilisateurs est désactivée.'
+            ]), 403);
         }
 
         $user = new User();
@@ -36,6 +43,9 @@ class AuthenticationController extends AbstractController
                     $signInForm->get('plainPassword')->getData()
                 )
             );
+
+            $secret = $googleAuthenticatorInterface->generateSecret();
+            $user->setGoogleAuthenticatorSecret($secret);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -72,5 +82,13 @@ class AuthenticationController extends AbstractController
     public function logout()
     {
         return new RedirectResponse($this->urlGenerator->generate('app_login'));
+    }
+
+    /**
+     * @Route("/2fa", name="2fa_login")
+     */
+    public function twoFactorLogin()
+    {
+        return $this->render('security/2fa_login.html.twig');
     }
 }
