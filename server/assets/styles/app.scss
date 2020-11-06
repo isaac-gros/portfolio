@@ -1,3 +1,31 @@
 @import 'bootstrap';
+@import '@fortawesome/fontawesome-free/css/all.min';
 
-// ...
+$white: #fff;
+$gray: #eee;
+
+// Login page
+.login_container {
+    height: 100vh;
+    background-color: $gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $white;
+    padding: 30px 15px;
+
+    input {
+        margin-bottom: 15px;
+    }
+
+    i {
+        margin-bottom: 0.5rem;
+    }
+
+    .qr_code {
+        display: block;
+        width: auto;
+        height: auto;
+        margin: 0 auto;
+    }
+}

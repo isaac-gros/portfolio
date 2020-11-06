@@ -21,6 +21,7 @@ class QrCodeController extends AbstractController
             ]), 403);
         }
         $qrCode = $qrCodeGenerator->getGoogleAuthenticatorQrCode($this->getUser());
+        $qrCode->setSize(160);
         return new Response($qrCode->writeString(), 200, ['Content-Type' => 'image/png']);
     }
 }

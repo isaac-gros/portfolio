@@ -1,10 +1,36 @@
-<h1>Vérification double facteur</h1>
-<img src="{{ path('qr_code') }}" alt="qr-code">
-<form class="form" action="/2fa_check" method="post">
-    <input id="_auth_code" type="text" name="_auth_code" autocomplete="one-time-code" autofocus/>
-    <p class="submit">
-        <input type="submit" value="Login" />
-    </p>
-</form>
+{% extends 'base.html.twig' %}
 
-<p class="cancel"><a href="/logout">Cancel</a></p>
+{% block title %}Portfolio - Connexion{% endblock %}
+
+{% block body %}
+
+<div class="login_container d-flex">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-7">
+                <form class="form" action="{{ path('2fa_login_check') }}" method="post">
+                    <div class="col-12">
+                        <img src="{{ path('qr_code') }}" class="qr_code" alt="qr-code">
+                    </div>
+                    <div class="col-12">
+                        <h1 class="h3 font-weight-normal text-center">Vérification double facteur</h1>
+                    </div>
+                    <div class="col-12 d-flex justify-content-center">
+                        <input id="_auth_code" type="text" name="_auth_code" autocomplete="one-time-code" autofocus/>
+                    </div>
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-12 col-md-12 col-lg-3 d-flex justify-content-center">
+                            <button class="btn btn-primary mt-3" type="submit">Vérifier</button>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-3 d-flex justify-content-center">
+                            <a class="btn btn-danger mt-3" href="{{ path('app_logout') }}">Annuler</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
