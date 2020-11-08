@@ -22,7 +22,7 @@ Encore
 
     // Assets
     .addEntry('app', './assets/app.js')
-    .addEntry('ionicons', './assets/ionicons.js')
+    .addEntry('editor', './assets/editor.js')
     .addStyleEntry('styles', './assets/styles/app.scss')
 ;
 
