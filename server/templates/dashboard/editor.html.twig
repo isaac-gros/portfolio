@@ -5,54 +5,100 @@
 
 {% include 'dashboard/navbar.html.twig' %}
 
+{{ form_start(entityForm) }}
 <div class="container mt-3">
     <div class="row">
+        <div class="col-12">
+            {% if form_errors(entityForm) %}
+                <div class="alert alert-primary" role="alert">
+                    {{ form_errors(entityForm) }}
+                </div>
+            {% endif %}
+        </div>
         <div class="col-12">
             <h1 class="h3">
                 {{ formTitle }}
             </h1>
         </div>
         <div class="col-12 col-lg-8">
-        {{ form_start(entityForm) }}
+            <div class="row">
 
-            {{ form_label(entityForm.base.title, 'Titre') }}
-            {{ form_widget(entityForm.base.title) }}
+                {# Titres #}
+                <div class="col-12 {{ (entityType == 'project') ? 'col-md-6' : '' }}">
+                    {{ form_errors(entityForm.base.title) }}
+                    {{ form_label(entityForm.base.title, 'Titre de la page', { 
+                        'label_attr': {'class': 'mt-3'} 
+                    }) }}
+                    {{ form_widget(entityForm.base.title) }}
+                </div>
 
-            {{ form_label(entityForm.base.description, 'Description', { 
-                'label_attr': {'class': 'mt-3'} 
-            }) }}
-            {{ form_widget(entityForm.base.description) }}
+                {% if entityType == 'project' %}
+                    <div class="col-12 col-md-6">
+                        {{ form_errors(entityForm.name) }}
+                        {{ form_label(entityForm.name, 'Nom du projet', { 
+                            'label_attr': {'class': 'mt-3'} 
+                        }) }}
+                        {{ form_widget(entityForm.name) }}
+                    </div> 
+                {% endif %}
 
-            {{ form_label(entityForm.base.content, 'Contenu', { 
-                'label_attr': {'class': 'mt-3'} 
-            }) }}
-            {{ form_widget(entityForm.base.content, {
-                id: 'editor'
-            }) }}
+                {# Descriptions #}
+                <div class="col-12 {{ (entityType == 'project') ? 'col-md-6' : '' }}">
+                    {{ form_errors(entityForm.base.description) }}
+                    {{ form_label(entityForm.base.description, 'Description de la page', { 
+                        'label_attr': {'class': 'mt-3'} 
+                    }) }}
+                    {{ form_widget(entityForm.base.description) }}
+                </div>
 
-            {% if entityType == 'project' %}
-                {{ form_row(entityForm.name, {
-                    label: 'Nom du projet'
-                }) }}
+                {% if entityType == 'project' %}
+                    <div class="col-12 col-md-6">
+                        {{ form_errors(entityForm.summary) }}
+                        {{ form_label(entityForm.summary, 'Résumé du projet', { 
+                            'label_attr': {'class': 'mt-3'} 
+                        }) }}
+                        {{ form_widget(entityForm.summary) }}
+                    </div>
+                {% endif %}
 
-                {{ form_row(entityForm.summary, {
-                    label: 'Résumé'
-                }) }}
+                {# Contenu #}
+                <div class="col-12">
+                    {{ form_label(entityForm.base.content, 'Contenu', { 
+                        'label_attr': {'class': 'mt-3'} 
+                    }) }}
+                    {{ form_widget(entityForm.base.content, {
+                        id: 'editor'
+                    }) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="row">
+                {# Image de prévisualisation #}
+                {% if entityType == 'project' %}
+                    <div class="col-12">
+                        {{ form_label(entityForm.thumbnail, 'Image de prévisualisation', { 
+                            'label_attr': {'class': 'mt-3'} 
+                        }) }}
+                        {{ form_widget(entityForm.thumbnail) }}
+                    </div>
+                {% endif %}
 
-                {{ form_row(entityForm.thumbnail, {
-                    label: 'Image de prévisualisation'
-                }) }}
-            {% endif %}
-
-            <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
-        {{ form_end(entityForm) }}
+                <div class="col-12 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary mt-3">
+                        <i class="fa fa-paper-plane"></i>
+                        Ajouter
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+{{ form_end(entityForm) }}
 
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('froala') }}
+    {{ encore_entry_script_tags('editor') }}
 {% endblock %}
