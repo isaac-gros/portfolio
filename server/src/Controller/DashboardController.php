@@ -31,22 +31,22 @@ class DashboardController extends AbstractController
             [
                 'icon' => 'home',
                 'text' => 'Éditer l\'accueil',
-                'path' => '#'
+                'path' => 'dashboard'
             ],
             [
                 'icon' => 'file',
                 'text' => 'Nouvelle page',
-                'path' => '#'
+                'path' => 'add_page'
             ],
             [
                 'icon' => 'tasks',
                 'text' => 'Nouveau projet',
-                'path' => '#'
+                'path' => 'add_project'
             ],
             [
                 'icon' => 'music',
                 'text' => 'Modifier la playlist',
-                'path' => '#'
+                'path' => 'dashboard'
             ]
         ];
 
@@ -77,6 +77,8 @@ class DashboardController extends AbstractController
      */
     public function addPageAction(Request $request, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $page = new Page();
         $pageForm = $this->createForm(PageType::class, $page);
         $pageForm->handleRequest($request);
@@ -101,6 +103,8 @@ class DashboardController extends AbstractController
      */
     public function addProjectAction(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $project = new Project();
         $projectForm = $this->createForm(ProjectType::class, $project);
         $projectForm->handleRequest($request);
@@ -110,37 +114,28 @@ class DashboardController extends AbstractController
         {
             // Process thumbnail upload
             $thumbnail = $projectForm->get('thumbnail')->getData();
+            $gallery = $projectForm->get('images')->getData();
 
-            if ($thumbnail) {
-                $originalFilename = pathinfo($thumbnail->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = uniqid($safeFilename.'_').'.'.$thumbnail->guessExtension();
+            // Prepare entities for submitted thumbnail and project images
+            $uploadDir = $this->getParameter('uploads_directory');
+            $thumbnailImage = UploadsController::createEntities($thumbnail, $uploadDir, $slugger);
+            $galleryImages = UploadsController::createEntities($gallery, $uploadDir, $slugger);
 
-                try {
-                    $thumbnail->move(
-                        $this->getParameter('uploads_directory'),
-                        $newFilename
-                    );
+            // Set the project of the uploaded images 
+            if($thumbnailImage['data'] != null) {
+                $thumbnailImage['data']->setProject($project);
+                $em->persist($thumbnailImage['data']);
+                $project->setThumbnail($thumbnailImage['data']->getUrl());
+            }
 
-                    // Create new Image in DB
-                    $image = new Image();
-                    $image->setUrl('uploads/' . $newFilename);
-                    $image->setTitle($originalFilename);
-                    $image->setProject($project);
-
-                } catch (FileException $e) {
-                    return new Response($this->renderView('errors/error.html.twig', [
-                        'status' => 500,
-                        'message' => $e->getMessage()
-                    ]), 500);
+            if($galleryImages['data'] != null) {
+                foreach($galleryImages['data'] as $projectImage) {
+                    $projectImage->setProject($project);
+                    $em->persist($projectImage);
                 }
             }
-
-            if(isset($image)) {
-                $em->persist($image);
-                $project->setThumbnail($image->getUrl());
-            }
             
+            // Send everything packed up to DB
             $em->persist($project);
             $em->flush();
             return $this->redirectToRoute('dashboard');
