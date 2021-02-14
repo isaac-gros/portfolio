@@ -15,22 +15,22 @@ class Page
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $title;
+    protected $title;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $description;
+    protected $description;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $content;
+    protected $content;
 
     public function getId(): ?int
     {

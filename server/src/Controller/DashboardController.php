@@ -22,7 +22,7 @@ class DashboardController extends AbstractController
     /**
      * @Route("/", name="dashboard")
      */
-    public function index(): Response
+    public function index(EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -54,11 +54,15 @@ class DashboardController extends AbstractController
         $overviews = [
             [
                 'title' => 'Pages',
-                'items' => []
+                'items' => $em->getRepository('App\Entity\Page')->findAll(
+                    [], ['id' => 'desc'], 5
+                ),
             ],
             [
                 'title' => 'Projets',
-                'items' => []
+                'items' => $em->getRepository('App\Entity\Project')->findAll(
+                    [], ['id' => 'desc'], 5
+                ),
             ],
             [
                 'title' => 'Playlist actuelle',
