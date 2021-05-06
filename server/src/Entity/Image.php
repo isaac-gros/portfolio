@@ -72,4 +72,14 @@ class Image
 
         return $this;
     }
+
+    public function toArray(): ?array
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'url' => $this->getUrl(),
+            'project_id' => $this->getProject()->getId()
+        ];
+    }
 }

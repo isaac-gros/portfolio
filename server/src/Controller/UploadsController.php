@@ -33,12 +33,12 @@ class UploadsController extends AbstractController
             // to prevent code repetition
             $uploadedFiles = !is_array($data) ? [$data] : $data;
 
-            foreach($uploadedFiles as $uploadedFile) {
+            foreach ($uploadedFiles as $uploadedFile) {
 
                 // Sanitize the filename
                 $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = uniqid($safeFilename.'_').'.'.$uploadedFile->guessExtension();
+                $newFilename = uniqid($safeFilename . '_') . '.' . $uploadedFile->guessExtension();
 
                 try {
 
@@ -47,10 +47,10 @@ class UploadsController extends AbstractController
 
                     // Prepare new Image entity in DB
                     $image = new Image();
-                    $image->setUrl('uploads/' . $newFilename);
+                    $image->setUrl('/'.'uploads/' . $newFilename);
                     $image->setTitle($originalFilename);
 
-                    if(!is_array($data)) {
+                    if (!is_array($data)) {
                         $response['data'] = $image;
                     } else {
                         $response['data'][] = $image;

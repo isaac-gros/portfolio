@@ -30,3 +30,35 @@ $gray: #eee;
         margin: 0 auto;
     }
 }
+
+// File explorer
+#file-list {
+    list-style: none;
+    display: flex;
+    justify-content: start;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+
+    .file-list__element {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        background: lightgray;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 0 15px;
+        overflow: hidden;
+
+        &__button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        img {
+            width: 100%;
+        }
+    }
+}

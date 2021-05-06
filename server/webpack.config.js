@@ -20,9 +20,12 @@ Encore
         config.corejs = 3;
     })
 
-    // Assets
-    .addEntry('app', './assets/app.js')
-    .addEntry('editor', './assets/editor.js')
+    // Scripts
+    .addEntry('app', './assets/scripts/app.js')
+    .addEntry('editor', './assets/scripts/editor.js')
+    .addEntry('explorer', './assets/scripts/explorer.js')
+
+    // Styles
     .addStyleEntry('styles', './assets/styles/app.scss')
 ;
 
