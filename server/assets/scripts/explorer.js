@@ -114,6 +114,12 @@ function displayUploads(uploads) {
         thumbnailContainer.classList = ['file-list__element'];
         thumbnailContainer.dataset.value = upload.id;
         thumbnail.src = upload.url;
+        
+        // Add click event listener for image to trigger input
+        thumbnail.addEventListener('click', (event) => {
+            let thumbnailInput = event.target.previousElementSibling
+            thumbnailInput.checked = !thumbnailInput.checked; 
+        });
 
         // Append elements
         thumbnailContainer.append(thumbnail);

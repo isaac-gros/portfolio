@@ -82,8 +82,8 @@
                             data-toggle="modal"
                             data-multiple="false" 
                             data-target="#explorer" 
-                            data-input="thumbnail">Image de prévisualisation</button>
-                        <input type="hidden" name="thumbnail">
+                            data-input="{{ entityForm.thumbnail.vars.full_name }}">Image de prévisualisation</button>
+                        {{ form_widget(entityForm.thumbnail) }}
                     </div>
 
                     <div class="col-12 col-md-6">
@@ -92,8 +92,8 @@
                             data-toggle="modal"
                             data-multiple="true" 
                             data-target="#explorer" 
-                            data-input="gallery[]">Galerie d'image</button>
-                        <input type="hidden" name="gallery[]">
+                            data-input="{{ entityForm.images.vars.full_name }}">Galerie d'image</button>
+                        {{ form_widget(entityForm.images) }}
                     </div>
                 {% endif %}
 

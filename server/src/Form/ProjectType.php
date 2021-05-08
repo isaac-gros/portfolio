@@ -6,6 +6,7 @@ use App\Entity\Project;
 use App\Form\BaseType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -41,20 +42,25 @@ class ProjectType extends AbstractType
             ->add('summary', TextareaType::class, [
                 'attr' => [ 'class' => 'form-control' ]
             ])
-            ->add('thumbnail', FileType::class, array_merge(
-                ['attr' => [ 'class' => 'form-control-file' ]],
-                $inputParams
-            ))
-            ->add('images', FileType::class, [
-                'multiple' => true,
-                'mapped' => false,
-                'constraints' => [
-                    new All([
-                      'constraints' => $inputParams['constraints']
-                    ]),
-                ],
-                'attr' => [ 'class' => 'form-control-file' ]
+            ->add('thumbnail', HiddenType::class, [
+                'required'   => false,
+                'empty_data' => ''
             ])
+             ->add('images', HiddenType::class, [
+                'required'   => false,
+                'empty_data' => ''
+            ])
+            ;
+            // ->add('images', FileType::class, [
+            //     'multiple' => true,
+            //     'mapped' => false,
+            //     'constraints' => [
+            //         new All([
+            //           'constraints' => $inputParams['constraints']
+            //         ]),
+            //     ],
+            //     'attr' => [ 'class' => 'form-control-file' ]
+            // ])
         ;
     }
 
