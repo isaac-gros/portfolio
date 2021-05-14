@@ -79,7 +79,7 @@ class Image
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'url' => $this->getUrl(),
-            'project_id' => $this->getProject()->getId()
+            'project_id' => (!empty($this->getProject())) ? $this->getProject()->getId() : null
         ];
     }
 }

@@ -4,6 +4,7 @@
 const explorer = document.getElementById('explorer');
 const explorerDone = document.getElementById('explorer-done');
 const explorerForm = document.getElementById('explorer-selection');
+const explorerImport = document.getElementById('uploads_uploads');
 const filesList = document.getElementById('file-list');
 const explorerButtons = document.querySelectorAll('.file-explorer');
 
@@ -46,6 +47,27 @@ explorerDone.addEventListener('click', () => {
 
     inputTarget.value = formData;
 });
+
+// Send uploaded to the server file and display it
+explorerImport.addEventListener('change', () => {
+
+    // Create form data
+    let formData = new FormData();
+
+    // Add files to form data
+    formData.append('uploads', explorerImport.files[0]);
+
+    // Add token to form data
+    let token = document.getElementById('uploads__token');
+    formData.append('_token', token.value);
+
+    fetch('/add/upload', {
+        method: 'POST',
+        body: formData
+    }).then(response => {
+        // 
+    });
+}, false);
 
 /**
  * Initialize the explorer for the first time
@@ -169,4 +191,12 @@ function displaySelectionButtons(isMultiple, inputValue = null) {
 
         thumbnail.prepend(selectButton);
     });
+}
+
+/**
+ * Handle file upload 
+ * and send it to the server
+ */
+function importUpload() {
+    console.log('OK');
 }

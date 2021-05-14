@@ -1,4 +1,5 @@
-<div id="explorer" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Explorateur de fichiers" aria-hidden="true">
+<div id="explorer" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Explorateur de fichiers"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -16,15 +17,35 @@
                             </form>
                         </div>
                     </div>
-                    <div class="row d-flex justify-content-end">
-                        <button class="button btn btn-secondary mr-3" id="explorer-cancel" data-dismiss="modal" aria-label="Annuler">
-                            <i class="fa fa-times"></i>
-                            Annuler
-                        </button>
-                        <button class="button btn btn-primary" id="explorer-done" data-dismiss="modal">
-                            <i class="fa fa-check"></i>
-                            Confirmer
-                        </button>
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-lg-6 col-sm-12 mb-3">
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    {{ form_end(uploadForm, {'render_rest': false}) }}
+                                    {{ form_label(uploadForm.uploads, 'Importer', { 
+                                        'label_attr': {'class': 'custom-file-label'} 
+                                    }) }}
+                                    {{ form_widget(uploadForm.uploads, {
+                                        'class': 'custom-file-input'
+                                    }) }}
+                                    {{ form_rest(uploadForm) }}
+                                    {{ form_end(uploadForm, {'render_rest': false}) }}
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="d-flex justify-content-end">
+                                <button class="button btn btn-secondary mr-3" id="explorer-cancel" data-dismiss="modal"
+                                    aria-label="Annuler">
+                                    <i class="fa fa-times"></i>
+                                    Annuler
+                                </button>
+                                <button class="button btn btn-primary" id="explorer-done" data-dismiss="modal">
+                                    <i class="fa fa-check"></i>
+                                    Confirmer
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
