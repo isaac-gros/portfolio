@@ -1,11 +1,18 @@
 /**
  * File explorer for uploads
  */
+// "Containers"
 const explorer = document.getElementById('explorer');
-const explorerDone = document.getElementById('explorer-done');
 const explorerForm = document.getElementById('explorer-selection');
-const explorerImport = document.getElementById('uploads_uploads');
+const explorerAlert = document.getElementById('upload-message');
 const filesList = document.getElementById('file-list');
+
+// Explorer buttons
+const explorerDone = document.getElementById('explorer-done');
+const explorerImport = document.getElementById('uploads_uploads');
+const explorerCloseAlert = document.getElementById('hide-upload-message');
+
+// Every file explorer triggers
 const explorerButtons = document.querySelectorAll('.file-explorer');
 
 // Determine if the explorer has been loaded once
@@ -64,10 +71,24 @@ explorerImport.addEventListener('change', () => {
     fetch('/add/upload', {
         method: 'POST',
         body: formData
-    }).then(response => {
-        // 
+    }).then(res => {
+        res.json().then(response => {
+            if(response.status == 200) {
+                displayUploads(response.data);
+                displaySelectionButtons();
+            } else {
+                displayUploadErrors(response.message);
+                displaySelectionButtons();
+            }
+        });
     });
 }, false);
+
+// Hide the alert and set the text content blank
+explorerCloseAlert.addEventListener('click', () => {
+    explorerAlert.classList.remove('show');
+    explorerAlert.firstElementChild.innerText = '';
+});
 
 /**
  * Initialize the explorer for the first time
@@ -194,9 +215,9 @@ function displaySelectionButtons(isMultiple, inputValue = null) {
 }
 
 /**
- * Handle file upload 
- * and send it to the server
+ * Display error messages
  */
-function importUpload() {
-    console.log('OK');
+function displayUploadErrors(message) {
+    explorerAlert.classList.add('show');
+    explorerAlert.firstElementChild.innerText = message;
 }
