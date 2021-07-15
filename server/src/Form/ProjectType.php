@@ -39,7 +39,7 @@ class ProjectType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Project::class,
+            // 'data_class' => Project::class,
         ]);
     }
 }

@@ -25,12 +25,13 @@ class Project extends Page
     private $summary;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\OneToOne(targetEntity=Image::class, mappedBy="asProjectThumbnail")
      */
     private $thumbnail;
 
     /**
-     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="project")
+     * @var Collection
+     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="asProjectImage")
      */
     private $images;
 
@@ -73,7 +74,7 @@ class Project extends Page
         return $this->thumbnail;
     }
 
-    public function setThumbnail(?string $thumbnail): self
+    public function setThumbnail(?Image $thumbnail): self
     {
         $this->thumbnail = $thumbnail;
 
@@ -88,13 +89,12 @@ class Project extends Page
         return $this->images;
     }
 
-    public function addImage(Image $image): self
+    /**
+     * @return Collection|Image[]
+     */
+    public function setImages(array $images): self
     {
-        if (!$this->images->contains($image)) {
-            $this->images[] = $image;
-            $image->setProject($this);
-        }
-
+        $this->images = $images;
         return $this;
     }
 

@@ -8,9 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-use App\Entity\Image;
 use App\Entity\Project;
-
 use App\Form\ProjectType;
 use App\Form\UploadsType;
 
@@ -25,41 +23,42 @@ class ProjectController extends AbstractController
 
         $project = new Project();
         $projectForm = $this->createForm(ProjectType::class, $project);
-        $projectForm->handleRequest($request);
-
-        $uploadForm = $this->createForm(UploadsType::class);
 
         // Handle POST request
-        if($projectForm->isSubmitted() && $projectForm->isValid())
+        if($request->isMethod('POST') && !empty($request->request->get('project')))
         {
-            // Process thumbnail upload
-            $thumbnail = $projectForm->get('thumbnail')->getData();
-            $gallery = $projectForm->get('images')->getData();
-
-            // Prepare entities for submitted thumbnail and project images
-            $uploadDir = $this->getParameter('uploads_directory');
-            $thumbnailImage = UploadsController::createEntities($thumbnail, $uploadDir, $slugger);
-            $galleryImages = UploadsController::createEntities($gallery, $uploadDir, $slugger);
-
-            // Set the project of the uploaded images 
-            if($thumbnailImage['data'] != null) {
-                $thumbnailImage['data']->setProject($project);
-                $em->persist($thumbnailImage['data']);
-                $project->setThumbnail($thumbnailImage['data']->getUrl());
-            }
-
-            if($galleryImages['data'] != null) {
-                foreach($galleryImages['data'] as $projectImage) {
-                    $projectImage->setProject($project);
-                    $em->persist($projectImage);
-                }
-            }
+            $formData = $request->request->get('project');
+            $thumbnailId = intval($formData['thumbnail']);
+            $galleryImagesId = array_map('intval', explode(',', $formData['images']));
+            $thumbnail = $em->getRepository('App\Entity\Image')->find($thumbnailId);
+            $gallery = $em->getRepository('App\Entity\Image')->findBy(['id' => $galleryImagesId]);
             
+            // Set base infos
+            $project->setTitle($formData['base']['title']);
+            $project->setDescription($formData['base']['description']);
+            $project->setContent($formData['base']['content']);
+
+            // Set project details
+            $project->setName($formData['name']);
+            $project->setSummary($formData['summary']);
+            $project->setThumbnail($thumbnail);
+            $project->setImages($gallery);
+ 
             // Send everything packed up to DB
             $em->persist($project);
             $em->flush();
+
+            $thumbnail->setAsProjectThumbnail($project);
+            foreach($gallery as $projectImage) {
+                $projectImage->setAsProjectImage($project);
+                $em->persist($projectImage);
+                $em->flush();
+            }
+
             return $this->redirectToRoute('dashboard');
         }
+
+        $uploadForm = $this->createForm(UploadsType::class);
 
         return $this->render('dashboard/editor.html.twig', [
             'entityForm' => $projectForm->createView(),

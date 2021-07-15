@@ -30,7 +30,12 @@ class Image
     /**
      * @ORM\ManyToOne(targetEntity=Project::class, inversedBy="images")
      */
-    private $project;
+    private $asProjectImage;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Project::class, inversedBy="thumbnail")
+     */
+    private $asProjectThumbnail;
 
     public function getId(): ?int
     {
@@ -61,25 +66,43 @@ class Image
         return $this;
     }
 
-    public function getProject(): ?Project
+    public function getAsProjectImage(): ?Project
     {
-        return $this->project;
+        return $this->asProjectImage;
     }
 
-    public function setProject(?Project $project): self
+    public function setAsProjectThumbnail(?Project $project): self
     {
-        $this->project = $project;
+        $this->asProjectThumbnail = $project;
+
+        return $this;
+    }
+
+    public function getAsProjectThumbnail(): ?Project
+    {
+        return $this->asProjectThumbnail;
+    }
+
+    public function setAsProjectImage(?Project $project): self
+    {
+        $this->asProjectImage = $project;
 
         return $this;
     }
 
     public function toArray(): ?array
     {
-        return [
+        $image = [
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'url' => $this->getUrl(),
-            'project_id' => (!empty($this->getProject())) ? $this->getProject()->getId() : null
+            'as_project_thumbnail' => null,
+            'as_project_image' => null,
         ];
+        
+        $image['as_project_thumbnail'] = (empty($this->asProjectThumbnail)) ?: $this->asProjectThumbnail->getId();
+        $image['as_project_image'] = (empty($this->asProjectImage)) ?: $this->asProjectImage->getId();
+
+        return $image;
     }
 }
